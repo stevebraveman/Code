@@ -1,11 +1,13 @@
+#pragma GCC optimize(2)
 #include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
 #define MAXN 100010
+#define blz 320
 bool p1;
-int a[MAXN], fa[MAXN], b[MAXN], n, sq, c[MAXN][501], d[MAXN][501], op, m;
-int ra[501][400], maxx = 0, ro[MAXN][501], rk[MAXN], bn[MAXN], tmp[MAXN], tmp1[MAXN];
+int a[MAXN], fa[MAXN], b[MAXN], n, sq, c[180][MAXN], d[180][MAXN], op, m, st[MAXN], maxv;
+int ra[180][400], maxx = 0, ro[180][MAXN], rk[MAXN], bn[MAXN], tmp[MAXN], tmp1[MAXN];
 bool p2;
 int find(int x) {
 	if (fa[x] == x) return x;
@@ -21,70 +23,74 @@ int min(int a, int b) {
 }
 void un(int p) {
 	for (int i = (p - 1) * sq + 1; i <= min(n, sq * p); i++) {
-		if (!ro[a[i]][p]) ro[a[i]][p] = i;
-		else fa[i] = ro[a[i]][p];
+		if (!ro[p][a[i]]) ro[p][a[i]] = i;
+		else fa[i] = ro[p][a[i]];
 	}
 }
 void change(int l ,int r, int x, int y) {
-	int tot = 0;
-	ro[x][b[l]] = ro[y][b[l]] = 0;
-	for (int i = (b[l] - 1) * sq + 1; i <= min(sq * b[l], r); i++) {
-		if (a[i] == x || a[i] == y) {
-			fa[i] = i;
-		}
-	}
-	for (int i = (b[l] - 1) * sq + 1; i <= min(sq * b[l], r); i++) {
+	int tot = 0, top = 0;
+	ro[b[l]][x] = ro[b[l]][y] = 0;
+	for (int i = (b[l] - 1) * sq + 1; i <= min(sq * b[l], n); i++) {
 		a[i] = a[find(i)];
 		if (a[i] == x || a[i] == y) {
-			if (!ro[a[i]][b[l]]) {
-				ro[a[i]][b[l]] = a[i];
-			} else {
-				fa[i] = ro[a[i]][b[l]];
-			}
+			st[++top] = i;
 		}
 	}
 	for (int i = l; i <= min(sq * b[l], r); i++) {
 		if (a[i] == x) a[i] = y, tot++;
 	}
-	c[x][b[l]] -= tot;
-	c[y][b[l]] += tot;
+	for (int i = 1; i <= top; i++) {
+		fa[st[i]] = st[i];
+	}
+	for (int i = 1; i <= top; i++) {
+		if (!ro[b[l]][a[st[i]]]) {
+			ro[b[l]][a[st[i]]] = st[i];
+		}
+		else {
+			fa[st[i]] = ro[b[l]][a[st[i]]];
+		}
+	}
+	c[b[l]][x] -= tot;
+	c[b[l]][y] += tot;
 	for (int i = b[l]; i <= b[n]; i++) {
-		d[x][i] -= tot;
-		d[y][i] += tot;
+		d[i][x] -= tot;
+		d[i][y] += tot;
 		if (bn[x] != bn[y]) {
-			ra[bn[x]][i] -= tot;
-			ra[bn[y]][i] += tot;
+			ra[i][bn[x]] -= tot;
+			ra[i][bn[y]] += tot;
 		}
 	}
 	if (b[l] != b[r]) {
-		tot = 0;
-		ro[x][b[l]] = ro[y][b[l]] = 0;
-		for (int i = (b[r] - 1) * sq + 1; i <= min(sq * b[r], n); i++) {
-			if (a[i] == x || a[i] == y) {
-				fa[i] = i;
-			}
-		}
+		tot = 0, top = 0;
+		ro[b[r]][x] = ro[b[r]][y] = 0;
 		for (int i = (b[r] - 1) * sq + 1; i <= min(sq * b[r], n); i++) {
 			a[i] = a[find(i)];
 			if (a[i] == x || a[i] == y) {
-				if (!ro[a[i]][b[r]]) {
-					ro[a[i]][b[r]] = a[i];
-				} else {
-					fa[i] = ro[a[i]][b[r]];
-				}
+				st[++top] = i;
 			}
 		}
 		for (int i = (b[r] - 1) * sq + 1; i <= r; i++) {
 			if (a[i] == x) a[i] = y, tot++;
 		}
-		c[x][b[r]] -= tot;
-		c[y][b[r]] += tot;
+		for (int i = 1; i <= top; i++) {
+			fa[st[i]] = st[i];
+		}
+		for (int i = 1; i <= top; i++) {
+			if (!ro[b[r]][a[st[i]]]) {
+				ro[b[r]][a[st[i]]] = st[i];
+			}
+			else {
+				fa[st[i]] = ro[b[r]][a[st[i]]];
+			}
+		}
+		c[b[r]][x] -= tot;
+		c[b[r]][y] += tot;
 		for (int i = b[r]; i <= b[n]; i++) {
-			d[x][i] -= tot;
-			d[y][i] += tot;
+			d[i][x] -= tot;
+			d[i][y] += tot;
 			if (bn[x] != bn[y]) {
-				ra[bn[x]][i] -= tot;
-				ra[bn[y]][i] += tot;
+				ra[i][bn[x]] -= tot;
+				ra[i][bn[y]] += tot;
 			}
 		}
 	}
@@ -97,60 +103,79 @@ void change(int l ,int r, int x, int y) {
 			ro[i][x] = 0;
 			tot = c[i][x];
 			ktot += tot;
-			c[i][y] += c[i][x];
 			c[i][x] = 0;
+			c[i][y] += tot;
 		}
 		d[i][x] -= ktot;
 		d[i][y] += ktot;
 		if (bn[x] != bn[y]) {
-			ra[bn[x]][i] -= ktot;
-			ra[bn[y]][i] += ktot;
+			ra[i][bn[x]] -= ktot;
+			ra[i][bn[y]] += ktot;
+		}
+	}
+	if (ktot) {
+		for (int i = b[r]; i <= b[n]; i++) {
+			d[i][x] -= ktot;
+			d[i][y] += ktot;
+			if (bn[x] != bn[y]) {
+				ra[i][bn[x]] -= ktot;
+				ra[i][bn[y]] += ktot;
+			}
 		}
 	}
 }
 int ask(int l, int r, int k) {
-	int tot = 0, ans = 0;
-	for (int i = l; i <= min(b[l] * sq, r); i++) {
-		a[i] = a[find(i)];
-		tmp[a[i]]++;
-		tmp1[bn[a[i]]]++;
-	}
-	int _l = 1, _r = -1;
-	for (int i = 1; i <= bn[100000]; i++) {
-		tot += tmp1[i];
-		if (tot >= k) {
-			tot -= tmp1[i];
-			_l = (i - 1) * 320 + 1;
-			_r = i * 320;
-			break;
+	int tot = 0, ans = 0, _l = 1, _r = -1;
+	if (b[l] == b[r]) {
+		for (int i = l; i <= r; i++) {
+			a[i] = a[find(i)];
+			tmp[a[i]]++;
+			tmp1[bn[a[i]]]++;
+		}
+		for (int i = 1; i <= bn[maxv]; i++) {
+			tot += tmp1[i];
+			if (tot >= k) {
+				tot -= tmp1[i];
+				_l = (i - 1) * blz + 1;
+				_r = i * blz;
+				break;
+			}
+		}
+		for (int i = _l; i <= _r; i++) {
+			tot += tmp[i];
+			if (tot >= k) {
+				ans = i;
+				break;
+			}
+		}
+		for (int i = l; i <= min(b[l] * sq, r); i++) {
+			tmp[a[i]]--;
+			tmp1[bn[a[i]]]--;
 		}
 	}
-	// printf("%d %d\n", _l, _r);
-	for (int i = _l; i <= _r; i++) {
-		tot += tmp[i];
-		if (tot >= k) {
-			ans = i;
-			break;
+	else {
+		tot = 0;
+		for (int i = l; i <= b[l] * sq; i++) {
+			a[i] = a[find(i)];
+			tmp[a[i]]++;
+			tmp1[bn[a[i]]]++;
 		}
-	}
-	// puts("OK");
-	if (b[l] != b[r]) {
 		for (int i = (b[r] - 1) * sq + 1; i <= r; i++) {
 			a[i] = a[find(i)];
 			tmp[a[i]]++;
 			tmp1[bn[a[i]]]++;
 		}
-		for (int i = 1; i <= bn[100000]; i++) {
-			tot += tmp1[i] + ra[i][b[r] - 1] - ra[i][b[l]];
+		for (int i = 1; i <= bn[maxv]; i++) {
+			tot += tmp1[i] + ra[b[r] - 1][i] - ra[b[l]][i];
 			if (tot >= k) {
-				tot -= tmp1[i] + ra[i][b[r] - 1] - ra[i][b[l]];
-				_l = (i - 1) * 320 + 1;
-				_r = i * 320;
+				tot -= tmp1[i] + ra[b[r] - 1][i] - ra[b[l]][i];
+				_l = (i - 1) * blz + 1;
+				_r = i * blz;
 				break;
 			}
 		}
 		for (int i = _l; i <= _r; i++) {
-			tot += tmp[i] + d[i][b[r] - 1] - d[i][b[l]];
+			tot += tmp[i] + d[b[r] - 1][i] - d[b[l]][i];
 			if (tot >= k) {
 				ans = i;
 				break;
@@ -160,36 +185,35 @@ int ask(int l, int r, int k) {
 			tmp[a[i]]--;
 			tmp1[bn[a[i]]]--;
 		}
-	}
-	for (int i = l; i <= min(b[l] * sq, r); i++) {
-		tmp[a[i]]--;
-		tmp1[bn[a[i]]]--;
+		for (int i = l; i <= b[l] * sq; i++) {
+			tmp[a[i]]--;
+			tmp1[bn[a[i]]]--;
+		}
 	}
 	return ans;
 }
 int main() {
-#ifndef ONLINE_JUDGE
-	printf("%.2f MB\n", (double)(&p2 - &p1) / 1024 / 1024);
-#endif
 	scanf("%d%d", &n, &m);
-	sq = 500;
+	sq = 600;
 	for (int i = 1; i <= n; i++) {
 		scanf("%d", &a[i]);
+		maxv = max(a[i], maxv);
+		fa[i] = i;
 		b[i] = (i - 1) / sq + 1;
 	}
-	for (int i = 1; i <= 100000; i++) {
-		bn[i] = (i - 1) / 320 + 1;
+	for (int i = 1; i <= maxv; i++) {
+		bn[i] = (i - 1) / blz + 1;
 	}
 	for (int i = 1; i <= n; i++) {
-		c[a[i]][b[i]]++;
+		c[b[i]][a[i]]++;
 	}
 	for (int i = 1; i <= b[n]; i++) {
 		un(i);
-		for (int j = 1; j <= 100000; j++) {
-			d[j][i] = d[j][i - 1] + c[j][i];
+		for (int j = 1; j <= maxv; j++) {
+			d[i][j] = d[i - 1][j] + c[i][j];
 		}
-		for (int j = 1; j <= 320; j++) {
-			ra[j][i] = ra[j][i - 1];
+		for (int j = 1; j <= blz; j++) {
+			ra[i][j] = ra[i - 1][j];
 		}
 		for (int j = (i - 1) * sq + 1; j <= min(i * sq, n); j++) {
 			ra[i][bn[a[j]]]++;

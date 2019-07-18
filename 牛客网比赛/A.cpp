@@ -2,20 +2,27 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-int a[50000010], b[] = {6, 2, 5, 5, 4, 5, 6, 3, 7, 6}, n, k, tot, lg[] = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+#define MAXN 1000010
+#define MOD 1000000007
+#define ll long long
+int n, ans, flag;
+char c[MAXN];
 int main() {
-	scanf("%d%d", &n, &k);
-	for (int i = 0; i <= 9; i++) {
-		a[i] = b[i];
-	}
-	for (int i = 0; i <= n; i += 10) {
-		a[i] = a[i / 10] + b[i % 10];
-	}
-	for (int i = 1; i <= n / 2; i++) {
-		if (a[i] + a[n - i] + 4 == a[n]) {
-			tot++;
+	scanf("%d", &n);
+	scanf("%s", s);
+	for (int i = 0; i < strlen(s); i++) {
+		int j = i + 1;
+		if (s[i] == '+') flag = 1;
+		if (s[i] == '-') flag = 2;
+		if (s[i] == '*') flag = 3;
+		if (s[i] == '%') flag = 4;
+		if (s[i] == '^') flag = 5;
+		while (1) {
+
+			if (s[j + 1] < '0' || s[j + 1] > '9') break;
 		}
+		i = j + 1;
 	}
-	printf("%d", tot);
+	printf("%lld", ans);
 	return 0;
 }

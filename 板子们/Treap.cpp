@@ -85,7 +85,7 @@ int FindR(int p, int val) {
 	return FindR(a[p].r, val) + a[a[p].l].size + a[p].cnt;
 }
 int FindN(int p, int r) {
-	if (p == 0) return INF;
+	if (p == 0) return 0;
 	if (a[a[p].l].size >= r) return FindN(a[p].l, r);
 	if (a[a[p].l].size + a[p].cnt >= r) return a[p].val;
 	return FindN(a[p].r, r - a[a[p].l].size - a[p].cnt);

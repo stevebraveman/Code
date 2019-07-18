@@ -1,3 +1,4 @@
+#pragma GCC optimize(3)
 #include <iostream>
 #include <ctime>
 #include <algorithm>
@@ -5,17 +6,19 @@
 #include <cmath>
 #define ll long long
 #define MOD 1000000007
-ll gcd(ll a, ll b) {
+template <typename Tp>
+Tp gcd(Tp a, Tp b) {
 	if (b == 0) return a;
 	else return gcd(b, a % b);
 }
-ll max(ll a, ll b) {
+template <typename Tp>
+Tp max(Tp a, Tp b) {
 	if (a > b) return a;
 	else return b;
 }
-ll mul(ll x, ll y, ll mod) {
-	ll tmp = (x * y - (ll)((long double)x / mod * y + 1.0e-8) * mod);
-	return tmp < 0 ? tmp + mod : tmp;
+inline ll mul(const ll a, const ll b, const ll md) {
+    ll c = (ll)a * b - (ll)((ll)((long double)a * b / md) * md);
+    return c < 0 ? md + c : ((ll)c > md ? c - md : c);
 }
 ll qpow(ll a, ll b, ll m) {
 	ll ans = 1;
@@ -30,36 +33,58 @@ ll qpow(ll a, ll b, ll m) {
 }
 ll ans = 0;
 inline ll pksrand(){
-    return rand() << 15 ^ rand() ;
+	return rand() << 15 ^ rand() ;
 }
 inline ll rd(){
-    return (((ll)pksrand()) << 30 ^ pksrand()) % MOD;
+	return (((ll)pksrand()) << 30 ^ pksrand()) % MOD;
 }
-bool Miller_Rabin(ll n, int repeat) {
-	if (n == 2 || n == 3 || n == 7 || n == 61 || n == 24251) return true;
-	if (!(n % 2) || !(n % 3) || !(n % 7) || !(n % 61) || !(n % 24251) || n == 1 || n == 46856248255981LL) return false;
-	ll d = n - 1;
-	int s = 0;
-	while(!(d & 1)) {
-		s++;
-		d >>= 1;
-	}
-	for(int i = 1; i <= repeat; i++) {
-		ll a = rd() % (n - 3) + 2;
-		ll x = qpow(a, d, n);
-		ll y = 0;
-		for(int j = 0; j < s; j++) {
-			y = mul(x, x, n);
-			if (y == 1 && x != 1 && x != (n - 1)) return false;
-			x = y;
-		}
-		if(y != 1) return false;
-	}
-	return true;
+// bool Miller_Rabin(ll n, int repeat) {
+	// if (n == 2 || n == 3 || n == 7 || n == 61 || n == 24251 || n == 647384955703 || n == 2728970505743) return true;
+	// if (!(n % 647384955703) || !(n % 2728970505743) || !(n % 2) || !(n % 3) || !(n % 7) || !(n % 61) || !(n % 24251) || n == 1 || n == 46856248255981LL) return false;
+	// ll d = n - 1;
+	// int s = 0;
+	// while(!(d & 1)) {
+		// s++;
+		// d >>= 1;
+	// }
+	// for(int i = 1; i <= repeat; i++) {
+		// ll a = rd() % (n - 3) + 2;
+		// ll x = qpow(a, d, n);
+		// ll y = 0;
+		// for(int j = 0; j < s; j++) {
+			// y = mul(x, x, n);
+			// if (y == 1 && x != 1 && x != (n - 1)) return false;
+			// x = y;
+		// }
+		// if(y != 1) return false;
+	// }
+	// return true;
+// }
+bool Rabin(ll p, ll x) {
+    if(qpow(p, x - 1, x) != 1)//费马小定理
+        return false;
+    ll k = x - 1;
+    while(!(k & 1))
+    {
+        k >>= 1;
+        ll t = qpow(p, k, x);
+        if(t != 1 && t != x - 1)
+            return false;
+        if(t == x - 1)
+            return true;
+    }
+    return true;
+}
+bool Miller_Rabin(ll x) {
+    if(x == 2 || x == 3 || x == 5 || x == 7 || x == 43)
+        return true;
+    if(x < 2)
+        return false;
+    return (Rabin(2, x) && Rabin(3, x) && Rabin(5, x) && Rabin(7, x) && Rabin(43, x));
 }
 ll mns(ll a, ll b) {
-  if (a >= b) return a - b;
-  else return b - a;
+	if (a >= b) return a - b;
+	else return b - a;
 }
 ll pollard_rho(ll n, ll c, ll stp){
 	if (n % 2 == 0) return 2;
@@ -97,7 +122,7 @@ ll pollard_rho(ll n, ll c, ll stp){
 	}
 }
 ll find(ll n) {
-	if(Miller_Rabin(n, 3)) {
+	if(Miller_Rabin(n)) {
 		return n;
 	}
 	ll d = 0;

@@ -2,115 +2,70 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define MAXN 100010
-#define ls(x) ((x) << 1)
-#define rs(x) ((x) << 1 | 1)
-struct Edge {
-	int v, nx;
-}e[MAXN << 2];
-int head[MAXN], ecnt, n, m, x, y, dep[MAXN], son[MAXN], siz[MAXN], fa[MAXN], r = 1, id[MAXN], wt[MAXN], w[MAXN], top[MAXN];
-int cnt, op;
-void add(int f, int t) {
-	e[++ecnt] = (Edge) {t, head[f]};
-	head[f] = ecnt;
+#define ll long long
+#define MOD 1000000007
+#define MAXN 1000100
+ll T, n, m, ans = 0, tot, d[MAXN + 10], num[MAXN + 10], p[MAXN + 10];
+template <typename Tp>
+Tp gcd(Tp a, Tp b) {
+	if (b == 0) return a;
+	else return gcd(b, a % b);
 }
-struct Segtree {
-	int a[MAXN], b[MAXN << 2];
-	void pd(int p) {
-		b[p] = b[ls(p)] ^ b[rs(p)];
-	}
-	void build(int p, int l, int r) {
-		if (l == r) {
-			b[p] = a[l];
-			return;
+bool chk[MAXN + 10];
+void seive() {
+	d[1] = 1;
+	p[1] = 1;
+	num[1] = 1;
+	chk[1] = 1;
+	for (ll i = 2; i <= MAXN; i++) {
+		if (!chk[i]) {
+			p[++tot] = i;
+			num[i] = 1;
+			d[i] = 2;
 		}
-		int m = (l + r) >> 1;
-		build(ls(p), l, m);
-		build(rs(p), m + 1, r);
-		pd(p);
-	}
-	void update(int x, int l, int r, int p, int k) {
-		if (l == r) {
-			b[p] = k;
-			return;
+		for (int j = 1; j <= tot && i * p[j] <= MAXN; j++) {
+			chk[i * p[j]] = 1;
+			if (!(i % p[j])) {
+				num[i * p[j]] = num[i] + 1;
+				d[i * p[j]] = d[i] / (num[i] + 1) * (num[i * p[j]] + 1);
+				break;
+			}
+			d[i * p[j]] = d[i] * d[p[j]];
+			num[i * p[j]] = 1;
 		}
-		int m = (l + r) >> 1;
-		if (x <= m) update(x, l, m, ls(p), k);
-		else update(x, m + 1, r, rs(p), k);
-		pd(p);
-	}
-	int ask(int x, int y, int l, int r, int p) {
-		int ans = 0;
-		if (x <= l && y >= r) {
-			return b[p];
-		}
-		int m = (l + r) >> 1;
-		if (x <= m) ans ^= ask(x, y, l, m, ls(p));
-		if (y > m) ans ^= ask(x, y, m + 1, r, rs(p));
-		return ans;
-	}
-}tr;
-void dfs1(int u, int f, int deep) {
-	dep[u] = deep;
-	fa[u] = f;
-	siz[u] = 1;
-	for (int i = head[u]; i; i = e[i].nx) {
-		int to = e[i].v;
-		if (to == f) continue;
-		dfs1(to, u, deep + 1);
-		siz[u] += siz[to];
-		if (siz[to] > siz[son[u]]) son[u] = to;
 	}
 }
-void dfs2(int u, int topf) {
-	id[u] = ++cnt;
-	wt[cnt] = w[u];
-	top[u] = topf;
-	if (!son[u]) return;
-	dfs2(son[u], topf);
-	for (int i = head[u]; i; i = e[i].nx) {
-		int to = e[i].v;
-		if (fa[u] == to || to == son[u]) continue;
-		dfs2(to, to);
-	}
-}
-inline void upd(int x, int k) {
-	tr.update(id[x], 1, n, 1, k);
-}
-int qrs(int x, int y) {
-	int ans = 0;
-	while (top[x] != top[y]) {
-		if (dep[top[x]] < dep[top[y]]) std::swap(x, y);
-		ans ^= tr.ask(id[top[x]], id[x], 1, n, 1);
-		x = fa[top[x]];
-	}
-	if (dep[x] > dep[y]) std::swap(x, y);
-	ans ^= tr.ask(id[x], id[y], 1, n, 1);
-	return ans;
+template <typename Tp>
+Tp min(Tp a, Tp b) {
+	if (a < b) return a;
+	else return b;
 }
 int main() {
-	scanf("%d%d", &n, &m);
-	for (int i = 1; i <= n; i++) {
-		scanf("%d", &w[i]);
-	}
-	for (int i = 1; i < n; i++) {
-		scanf("%d%d", &x, &y);
-		add(x, y);
-		add(y, x);
-	}
-	dfs1(r, 0, 1);
-	dfs2(r, r);
-	for (int i = 1; i <= n; i++) {
-		tr.a[i] = wt[i];
-	}
-	tr.build(1, 1, n);
-	while (m--) {
-		scanf("%d%d%d", &op, &x, &y);
-		if (op == 1) {
-			upd(x, y);
+	scanf("%lld", &T);
+	while (T--) {
+		ans = 0;
+		scanf("%lld%lld", &n, &m);
+		if (n > m) std::swap(n, m);
+		for (ll l = 1, r; l <= n; l = r + 1) {
+			r = min(n / (n / l), m / (m / l));
+			ans += ((m / l) * (n / l) % MOD) * (r - l + 1 + MOD) % MOD;
 		}
-		else {
-			printf("%d\n", qrs(x, y));
-		}
+		printf("%d\n", ans % MOD);
 	}
+	return 0;
 }
+/*
+int main() {
+	scanf("%lld", &T);
+	seive();
+	while (T--) {
+		ans = 0;
+		scanf("%lld%lld", &n, &m);
+		for (ll i = 1; i <= n; i++) {
+			for (ll j = 1; j <= m; j++) {
+				ans += d[gcd(i, j)];
+			}
+		}
+		printf("%lld\n", ans);
+	}
+}*/

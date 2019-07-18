@@ -16,6 +16,7 @@ int main() {
 		else {
 			puts("AC");
 			printf("%.2f\n", (double)(t2 - t1) * 1000 / CLOCKS_PER_SEC);
+			system("pause");
 		}
 	}
 	return 0;

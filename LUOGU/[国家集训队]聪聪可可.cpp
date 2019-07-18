@@ -6,7 +6,8 @@
 struct Edge {
 	int v, nx, w;
 }e[MAXN << 2];
-int head[MAXN], ecnt, n, m, x, y, siz[MAXN], son[MAXN], minn, r, dis[MAXN], ans, size, totsiz, z, tot, sum[4], gg;
+int head[MAXN], ecnt, n, m, x, y, siz[MAXN], son[MAXN];
+int minn, r, dis[MAXN], ans, size, totsiz, z, tot, sum[4], gg;
 bool vis[MAXN];
 int gcd(int a, int b) {
 	if (b == 0) return a;
