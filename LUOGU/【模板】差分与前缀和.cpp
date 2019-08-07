@@ -127,7 +127,6 @@ int main() {
 	scanf("%d%d%d", &n, &k, &fl);
 	for (int i = 0; i < n; i++) {
 		scanf("%d", &a[i]);
-		
 	}
 	a[0]++;
 	Ln(a, p, n);

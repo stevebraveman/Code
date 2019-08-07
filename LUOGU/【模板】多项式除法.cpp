@@ -6,22 +6,6 @@
 #define MOD 998244353
 #define G 3
 #define I 86583718
-void read(int &x) {
-	int f = 1;
-	x = 0;
-	char c = getchar();
-	while (c < '0' || c > '9') {if (c == '-') f = -1; c = getchar();}
-	while (c >= '0' && c <= '9') {x = x * 10 + c - '0'; c = getchar();}
-	x *= f;
-}
-void write(int x) {
-	if (x < 0) {
-		putchar('-');
-		x = -x;
-	}
-	if (x > 9) write(x / 10);
-	putchar(x % 10 + '0');
-}
 int qpow(int a, int b) {
 	int res = 1;
 	while (b) {
@@ -73,67 +57,10 @@ void inv(int d, int *a, int *b) {
 	ntt(c, _n, 1);
 	ntt(b, _n, 1);
 	for (int i = 0; i < _n; i++) {
-		b[i] = (2 - 1LL * b[i] * c[i] % MOD + MOD) % MOD * b[i] % MOD;
+		b[i] = 1LL * (2 - 1LL * b[i] * c[i] % MOD + MOD) % MOD * b[i] % MOD;
 	}
 	ntt(b, _n, -1);
 	for (int i = d; i < _n; i++) {
-		b[i] = 0;
-	}
-	return;
-}
-int d[MAXN], e[MAXN];
-void Deriv(int *a, int *b, int l) {
-	for (int i = 1; i < l; i++) {
-		b[i - 1] = 1LL * a[i] * i % MOD;
-	}
-	b[l - 1] = 0;
-}
-void Integ(int *a, int *b, int l) {
-	for (int i = 1; i < l; i++) {
-		b[i] = 1LL * a[i - 1] * qpow(i, MOD - 2) % MOD;
-	}
-	b[0] = 0;
-}
-void Ln(int *a, int *b, int k) {
-	for (int i = 0; i < 2 * k; i++) d[i] = 0;
-	inv(k, a, d);
-	Deriv(a, e, k);
-	int l = 0, _n = 1;
-	while (_n < (k << 1)) _n <<= 1, l++;
-	for (int i = 1; i < _n; i++) {
-		rev[i] = (rev[i >> 1] >> 1) | (((long long)i & 1) << (l - 1));
-	}
-	ntt(e, _n, 1);
-	ntt(d, _n, 1);
-	for (int i = 0; i < _n; i++) {
-		e[i] = 1LL * e[i] * d[i] % MOD;
-	}
-	ntt(e, _n, -1);
-	Integ(e, b, k);
-}
-int g[MAXN], h[MAXN];
-void Exp(int *a, int *b, int k) {
-	if (k == 1) {
-		b[0] = 1;
-		return;
-	}
-	Exp(a, b, (k + 1) >> 1);
-	int l = 0, _n = 1;
-	while (_n < (k << 1)) _n <<= 1, l++;
-	for (int i = 1; i < _n; i++) {
-		rev[i] = (rev[i >> 1] >> 1) | (((long long)i & 1) << (l - 1));
-	}
-	for (int i = 0; i < (k << 1); i++) g[i] = h[i] = 0;
-	Ln(b, g, k);
-	for (int i = 0; i < k; i++) h[i] = a[i];
-	ntt(b, _n, 1);
-	ntt(h, _n, 1);
-	ntt(g, _n, 1);
-	for (int i = 0; i < _n; i++) {
-		b[i] = 1LL * (1LL - g[i] + h[i] + MOD) * b[i] % MOD;
-	}
-	ntt(b, _n, -1);
-	for (int i = k; i < _n; i++) {
 		b[i] = 0;
 	}
 	return;
@@ -151,127 +78,30 @@ void mult(int *a, int *b, int *c, int n) {
 	}
 	ntt(c, _n, -1);
 }
-int fl, tt[MAXN], rr[MAXN], gg[MAXN], pp[MAXN], kk[MAXN], ss[MAXN], yy[MAXN], hh[MAXN], ww[MAXN];
-void clear() {
-	for (int i = 1; i < (n << 2); i++) {
-		b[i] = c[i] = h[i] = g[i] = d[i] = e[i] = 0;
-		tt[i] = rr[i] = kk[i] = ss[i] = yy[i] = hh[i] = 0;
-	}
-}
-void _clr() {
-	for (int i = 1; i < (n << 2); i++) {
-		ww[i] = pp[i] = gg[i] = tt[i] = rr[i] = kk[i] = ss[i] = yy[i] = hh[i] = 0;
-	}
-}
-void sqrt(int *a, int *b, int d) {
-	clear();
-	Ln(a, kk, d);
-	int inv2 = qpow(2, MOD - 2);
-	for (int i = 0; i < d; i++) {
-		kk[i] = (1LL * kk[i] * inv2) % MOD;
-	}
-	clear();
-	Exp(kk, b, d);
-}
-void pow(int *a, int *b, int k, int d) {
-	clear();
-	_clr();
-	Ln(a, kk, n);
-	clear();
-	for (int i = 0; i < d; i++) {
-		kk[i] = 1LL * kk[i] * k % MOD;
-	}
-	Exp(kk, b, d);
-	return;
-}
-void sin(int *a, int *b, int d) {
-	clear();
-	_clr();
-	for (int i = 0; i < d; i++) {
-		tt[i] = 1LL * a[i] * I % MOD;
-	}
-	Exp(tt, rr, d);
-	clear();
-	inv(d, rr, gg);
-	for (int i = 0; i < d; i++) {
-		b[i] = 1LL * (rr[i] - gg[i] + MOD) * qpow(I * 2, MOD - 2) % MOD;
-	}
-}
-void cos(int *a, int *b, int d) {
-	clear();
-	_clr();
-	for (int i = 0; i < d; i++) {
-		tt[i] = 1LL * a[i] * I % MOD;
-	}
-	Exp(tt, rr, d);
-	clear();
-	inv(d, rr, gg);
-	for (int i = 0; i < d; i++) {
-		b[i] = 1LL * (rr[i] + gg[i]) * qpow(2, MOD - 2) % MOD;
-	}
-}
-void arcsin(int *a, int *b, int d) {
-	clear();
-	_clr();
-	for (int i = 0; i < d; i++) {
-		ww[i] = gg[i] = a[i];
-	}
-	Deriv(a, tt, d);
-	mult(gg, ww, pp, d);
-	for (int i = 0; i < d; i++) {
-		pp[i] = (MOD - pp[i]) % MOD;
-	}
-	pp[0] = (pp[0] + 1) % MOD;
-	sqrt(pp, ss, d);
-	clear();
-	inv(d, ss, yy);
-	clear();
-	mult(tt, yy, hh, d);
-	clear();
-	Integ(hh, b, d);
-}
-void arctan(int *a, int *b, int d) {
-	clear();
-	_clr();
-	for (int i = 0; i < d; i++) {
-		ww[i] = gg[i] = a[i];
-	}
-	Deriv(a, tt, d);
-	mult(gg, ww, pp, d);
-	pp[0] = (1 + pp[0]) % MOD;
-	clear();
-	inv(d, pp, yy);
-	clear();
-	mult(tt, yy, hh, d);
-	clear();
-	Integ(hh, b, d);
-}
-int q[MAXN], A[MAXN], B[MAXN], C[MAXN], D[MAXN], E[MAXN], F[MAXN];
+int q[MAXN], A[MAXN], B[MAXN], C[MAXN], D[MAXN], E[MAXN];
 int main() {
-	read(n), read(m);
+	scanf("%d%d", &n, &m);
 	for (int i = 0; i <= n; i++) {
-		read(a[i]);
+		scanf("%d", &a[i]);
 		A[n - i] = a[i];
 	}
 	for (int i = 0; i <= m; i++) {
-		read(q[i]);
+		scanf("%d", &q[i]);
 		B[m - i] = q[i];
 	}
 	for (int i = n - m + 2; i <= m; i++) {
 		B[i] = 0;
 	}
 	inv(n - m + 1, B, C);
-	clear();
-	mult(C, A, D, 2 * n + 2);
+	mult(C, A, D, n);
 	std::reverse(D, D + n - m + 1);
+	for (int i = n - m + 1; i <= n; i++) {
+		D[i] = 0;
+	}
 	for (int i = 0; i < n - m + 1; i++) {
 		printf("%d ", D[i]);
 	}
 	puts("");
-	for (int i = n - m + 1; i <= n; i++) {
-		D[i] = 0;
-	}
-	clear();
 	mult(D, q, E, n);
 	for (int i = 0; i < m; i++) {
 		printf("%d ", (a[i] - E[i] + MOD) % MOD);

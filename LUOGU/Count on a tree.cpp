@@ -1,40 +1,66 @@
+// #pragma comment(linker, "/STACK:1024000000,1024000000") 
 #include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define MAXN 100100
+#define OK puts("OK")
+#define MAXN 400010
+#define re register
+bool p1;
+int a[MAXN * 20], b[MAXN], f[MAXN], ls[MAXN * 20], rs[MAXN * 20], tot = 0, rt[MAXN], lans;
+int siz[MAXN], id[MAXN], son[MAXN], fa[MAXN], dep[MAXN], tim, top[MAXN], len;
+int head[MAXN], ecnt;
+int _t = 0;
+template <typename T>
+inline void read(T &x) {
+	T f = 1;
+	x = 0;
+	char c = getchar();
+	while (c > '9' || c < '0') {if (c == '-') f = -1; c = getchar();}
+	while (c >= '0' && c <= '9') {x = x * 10 + c - '0'; c = getchar();}
+	x *= f;
+}
 struct Edge {
 	int v, nx;
-} e[MAXN * 2];
-int head[MAXN], ecnt, n, m, son[MAXN], dep[MAXN], top[MAXN], size[MAXN], r = 1, fa[MAXN], len;
-int x, y;
-void add(int f, int t) {
+}e[MAXN << 2];
+inline void add(int f, int t) {
 	e[++ecnt] = (Edge) {t, head[f]};
 	head[f] = ecnt;
 }
-void dfs1(int u, int f, int d) {
+void insert(int l, int r, int x, int &y, int p) {
+	y = ++tot;
+	a[y] = a[x] + 1;
+	if (l == r) return;
+	int m = (l + r) >> 1;
+	if (p <= m) rs[y] = rs[x], insert(l, m, ls[x], ls[y], p);
+	else ls[y] = ls[x], insert(m + 1, r, rs[x], rs[y], p);
+}
+void dfs(int ft, int u, int d) {
 	dep[u] = d;
-	fa[u] = f;
-	size[u] = 1;
-	for (int i = head[u]; i; i = e[i].nx) {
+	fa[u] = ft;
+	siz[u] = 1;
+	insert(1, len, rt[ft], rt[u], b[u]);
+	// printf("%d %d %d %d %d\n", ft, u, b[u], d, rt[u]);
+	for (re int i = head[u]; i; i = e[i].nx) {
 		int to = e[i].v;
-		if (to == f) continue;
-		dfs1(to, u, d + 1);
-		size[u] += size[to];
-		if (size[son[u]] < size[to]) son[u] = to;
+		if (to == ft) continue;
+		dfs(u, to, d + 1);
+		siz[u] += siz[to];
+		if (siz[son[u]] < siz[to]) son[u] = to;
+		// printf("%d\n", u);
 	}
 }
 void dfs2(int u, int topf) {
 	top[u] = topf;
 	if (!son[u]) return;
 	dfs2(son[u], topf);
-	for (int i = head[u]; i; i = e[i].nx) {
+	for (re int i = head[u]; i; i = e[i].nx) {
 		int to = e[i].v;
 		if (to == fa[u] || to == son[u]) continue;
 		dfs2(to, to);
 	}
 }
-int LCA(int x, int y) {
+inline int LCA(int x, int y) {
 	while (top[x] != top[y]) {
 		if (dep[top[x]] < dep[top[y]]) std::swap(x, y);
 		x = fa[top[x]];
@@ -42,59 +68,39 @@ int LCA(int x, int y) {
 	if (dep[x] > dep[y]) std::swap(x, y);
 	return x;
 }
-int tot, ls[MAXN], a[MAXN], b[MAXN << 2], ls[MAXN << 2], rs[MAXN << 2];
-void build(int &p, int l, int r) {
-	p = ++tot;
-	if (l == r) {
-		return;
-	}
+int ask(int l, int r, int x, int y, int la, int fala, int k) {
+	if (l == r) return l;
 	int m = (l + r) >> 1;
-	build(ls[p], l, m);
-	build(rs[p], m + 1, r);
+	int p = a[ls[y]] + a[ls[x]] - a[ls[la]] - a[ls[fala]];
+	if (p >= k) return ask(l, m, ls[x], ls[y], ls[la], ls[fala], k);
+	else return ask(m + 1, r, rs[x], rs[y], rs[la], rs[fala], k - p);
 }
-int insert(int x, int l, int r, int p) {
-	int _p = ++tot;
-	ls[_p] = ls[p];
-	rs[_p] = rs[p];
-	b[_p] = b[p] + 1;
-	if (l == r) {
-		return _p;
-	}
-	int m = (l + r) >> 1;
-	if (x <= m) ls[_p] = insert(x, l, m, ls[p]);
-	else rs[_p] = insert(x, m + 1, r, rs[p]);
-	return _p;
-}
-int ask(int x, int y, int l, int r, int k) {
-	int ans, x = b[ls[y]] - b[ls[x]];
-	if (l == r) {
-		return l;
-	}
-	int m = (l + r) >> 1;
-	if (x <= m) ans = ask(ls[x], ls[y], l, m, k);
-	else ans = ask(rs[x], rs[y], m + 1, r, k - x);
-	return ans;
-}
+int n, m, l, r, k, x, y;
 int main() {
-	scanf("%d%d", &n, &m);
-	for (int i = 1; i <= n; i++) {
-		scanf("%d", &a[i]);
-		ls[i] = a[i];
+	// freopen("data.in", "r", stdin);
+	// freopen("data.out", "w", stdout);
+	read(n), read(m);
+	for (re int i = 1; i <= n; i++) {
+		read(b[i]);
+		f[i] = b[i];
 	}
-	for (int i = 1; i < n; i++) {
-		scanf("%d%d", &x, &y);
+	std::sort(f + 1, f + 1 + n);
+	len = std::unique(f + 1, f + 1 + n) - f - 1;
+	for (re int i = 1; i <= n; i++) {
+		b[i] = std::lower_bound(f + 1, f + 1 + len, b[i]) - f;
+	}
+	for (re int i = 1; i < n; i++) {
+		read(x), read(y);
 		add(x, y);
 		add(y, x);
 	}
-	dfs1(1)
-	std::sort(ls + 1, ls + 1 + n);
-	len = std::unique(ls + 1, ls + 1 + n) - ls - 1;
-	build(b[0], 1, len);
-	for (int i = 1; i <= n; i++) {
-		int x = std::lower_bound(ls + 1, ls + 1 + len, a[i]) - a;
-		b[i] = insert(x, 1, len, b[i - 1]);
+	dfs(0, 1, 1);
+	dfs2(1, 1);
+	for (re int i = 1; i <= m; i++) {
+		read(l), read(r), read(k);
+		l = lans ^ l;
+		int lc = LCA(l, r);
+		printf("%d\n", lans = f[ask(1, len, rt[l], rt[r], rt[lc], rt[fa[lc]], k)]);
 	}
-	while (m--) {
-		scanf("%d%d", )
-	}
+	return 0;
 }

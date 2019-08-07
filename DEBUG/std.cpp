@@ -40,16 +40,13 @@ inline void Find(){
 			p0=p[i],k=i;
 	swap(p[k],p[0]);
 	sort(&p[1],&p[n],cmp);//关于最下方的点排序
-	// for (int i = 0; i < n; i++) {
-	// 	printf("%d %d\n", p[i].x, p[i].y);
-	// }
 	S[0]=p[0];S[1]=p[1];
 	top=1;//栈顶 
 	for(rg int i=2;i<n;){
 		if(top&&Compare(S[top-1],p[i],S[top])>=0) top--;
 		else   S[++top]=p[i++];  
 	}
-	for(int i=0;i<=top;++i)printf("%d %d\n",S[i].x,S[i].y);
+	//for(int i=0;i<=top;++i)printf("(%d,%d)\n",S[i].x,S[i].y);
 }
 inline long long Dis(Node a,Node b){
 	return 1LL*(a.x-b.x)*(a.x-b.x)+1LL*(a.y-b.y)*(a.y-b.y);
@@ -60,6 +57,9 @@ long long GetMax(){
 	return Dis(S[0],S[1]); 
 	S[++top]=S[0];//把第一个点放到最后
 	int j=2;
+	// for (int i = 1; i < top; i++) {
+	// 	printf("%d %d\n", S[i].x, S[i].y);
+	// }
 	for(int i=0;i<top;++i){
 		while(Compare(S[i],S[i+1],S[j])<Compare(S[i],S[i+1],S[j+1]))
 		j=(j+1)%top;
@@ -71,6 +71,8 @@ long long GetMax(){
 	return re;
 }
 int main(){
+	freopen("data.in", "r", stdin);
+	freopen("data1.out", "w", stdout);
 	n=read();
 	for(int i=0;i<n;++i){
 		p[i].x=read();p[i].y=read();

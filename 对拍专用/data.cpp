@@ -1,13 +1,20 @@
 #include <bits/stdc++.h>
 #define random(a, b) rand() % ((b) - (a) + 1) + (a)
-std::vector<int> v[50];
-int x[50], y[50], cnt;
+int randposi(int a) {
+	int t = rand() % 2;
+	if (t == 1) return -a;
+	else return a;
+}
 int main() {
 	srand(time(NULL));
 	int n, m;
-	printf("1");
-	puts("");
-	n = random(1, 1000);
-	m = random(1, 1000);
-	printf("%d %d\n", n, m);
+	n = 10;
+	printf("%d\n", n);
+	for (int i = 1; i <= n; i++) {
+		int x = random(0, 10);
+		int y = random(0, 10);
+		x = randposi(x);
+		y = randposi(y);
+		printf("%d %d\n", x, y);
+	}
 }

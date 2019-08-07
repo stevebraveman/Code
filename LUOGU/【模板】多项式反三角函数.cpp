@@ -38,7 +38,7 @@ void ntt(int *a, int n, int f) {
 	for (int i = 1; i < n; i <<= 1) {
 		int wn = qpow(G, (MOD - 1) / ((int)i << 1));
 		for (int j = 0; j < n; j += ((int)i << 1)) {
-			int w = 1LL;
+			int w = 1;
 			for (int k = 0; k < i; ++k, w = 1LL * w * wn % MOD) {
 				int x = a[j + k], y = 1LL * w * a[j + k + i] % MOD;
 				a[j + k] = (x + y) % MOD, a[j + k + i] = (x - y + MOD) % MOD;

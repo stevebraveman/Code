@@ -32,36 +32,8 @@ ll qpow(ll a, ll b, ll m) {
 	return ans;
 }
 ll ans = 0;
-inline ll pksrand(){
-	return rand() << 15 ^ rand() ;
-}
-inline ll rd(){
-	return (((ll)pksrand()) << 30 ^ pksrand()) % MOD;
-}
-// bool Miller_Rabin(ll n, int repeat) {
-	// if (n == 2 || n == 3 || n == 7 || n == 61 || n == 24251 || n == 647384955703 || n == 2728970505743) return true;
-	// if (!(n % 647384955703) || !(n % 2728970505743) || !(n % 2) || !(n % 3) || !(n % 7) || !(n % 61) || !(n % 24251) || n == 1 || n == 46856248255981LL) return false;
-	// ll d = n - 1;
-	// int s = 0;
-	// while(!(d & 1)) {
-		// s++;
-		// d >>= 1;
-	// }
-	// for(int i = 1; i <= repeat; i++) {
-		// ll a = rd() % (n - 3) + 2;
-		// ll x = qpow(a, d, n);
-		// ll y = 0;
-		// for(int j = 0; j < s; j++) {
-			// y = mul(x, x, n);
-			// if (y == 1 && x != 1 && x != (n - 1)) return false;
-			// x = y;
-		// }
-		// if(y != 1) return false;
-	// }
-	// return true;
-// }
 bool Rabin(ll p, ll x) {
-    if(qpow(p, x - 1, x) != 1)//费马小定理
+    if(qpow(p, x - 1, x) != 1)
         return false;
     ll k = x - 1;
     while(!(k & 1))
