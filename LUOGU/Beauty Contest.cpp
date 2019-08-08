@@ -49,7 +49,7 @@ int main() {
 	n++;
 	p[n] = p[1];
 	for (int i = 3; i <= n; i++) {
-		while (top > 1 && crossp(st[top], p[i], st[top - 1]) < 0) top--;
+		while (top > 1 && crossp(st[top - 1], p[i], st[top]) >= 0) top--;
 		st[++top] = p[i];
 	}
 	st[top + 1] = st[1];
