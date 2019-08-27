@@ -5,16 +5,17 @@
 #include <cmath>
 #define sqr(x) ((x) * (x))
 #define MAXN 100010
+#define ldb double
 struct pt {
-	double x, y;
+	ldb x, y;
 }p[MAXN], st[MAXN], p0;
 int n, r, top, f, g;
-double ans;
-double crossp(pt a, pt b, pt c) {
-	double x1 = a.x - c.x;
-	double y1 = a.y - c.y;
-	double x2 = b.x - c.x;
-	double y2 = b.y - c.y;
+ldb ans;
+ldb crossp(pt a, pt b, pt c) {
+	ldb x1 = a.x - c.x;
+	ldb y1 = a.y - c.y;
+	ldb x2 = b.x - c.x;
+	ldb y2 = b.y - c.y;
 	return x1 * y2 - y1 * x2;
 }
 bool cmp(pt a, pt b) {
@@ -46,7 +47,7 @@ int main() {
 	st[2] = p[2];
 	top = 2;
 	for (int i = 3; i <= n; i++) {
-		if (top > 1 && crossp(st[top], p[i], st[top - 1]) <= 0) top--;
+		if (top > 1 && crossp(st[top - 1], p[i], st[top]) >= 0) top--;
 		st[++top] = p[i];
 	}
 	st[top + 1] = p[1];

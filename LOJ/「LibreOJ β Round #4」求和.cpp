@@ -2,6 +2,4 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-int main() {
-	TT FTFFT
-}
+#define MAXN 1001010
