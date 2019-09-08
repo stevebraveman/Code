@@ -2,8 +2,9 @@
 #include <cstring>
 #include <cstdio>
 #include <algorithm>
+#include <queue>
 #define MAXN 500010
-#define INF 0x7fffffffff
+#define INF 0x7fffffffffLL
 #define int long long
 namespace STman {
 	inline char gc(){
@@ -59,10 +60,11 @@ namespace STman {
 }
 using namespace STman;
 struct Edge {
-	int v, w, nx
+	int v, w, nx;
 }e[MAXN];
 int head[MAXN];
-bool vis[MAXN], ecnt, n, m = INF, x, y, z, dis[MAXN], l, r, a[MAXN], ans, k, g;
+bool vis[MAXN];
+int ecnt, n, m = INF, x, y, z, dis[MAXN], l, r, a[MAXN], ans, k, g;
 inline void add(int f, int t, int w) {
 	e[++ecnt] = (Edge) {t, head[f], w};
 	head[f] = ecnt;
@@ -70,18 +72,18 @@ inline void add(int f, int t, int w) {
 inline void spfa(int s) {
 	memset(dis, 0, sizeof(dis));
 	memset(vis, 0, sizeof(vis));
-	queue <node> q;
+	std::queue <int> q;
 	dis[s] = 0;
 	q.push(s);
 	vis[s] = 1;
-	while (!q.push()) {
+	while (!q.empty()) {
 		int f = q.front();
 		q.pop();
 		vis[f] = 0;
 		for (int i = head[f]; i; i = e[i].nx) {
 			int to = e[i].v;
-			if (dis[to] > dis[v] + e[i].w) {
-				dis[to] = dis[v] + e[i].w;
+			if (dis[to] > dis[to] + e[i].w) {
+				dis[to] = dis[to] + e[i].w;
 				if (!vis[to]) {
 					q.push(to);
 					vis[to] = 1;
@@ -113,4 +115,5 @@ signed main() {
 			if (k <= r / m * m + i && k / m * m + i <= g) ans++;
 		}
 	}
+	printf("%d", ans);
 }
