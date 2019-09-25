@@ -2,12 +2,26 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-long long a1, a2, n, d, ans, k;
+#define MAXN 1000100
+int a[MAXN], c[MAXN], l, k, mina;
+char b[MAXN];
+bool cmp(int a, int b) {
+	return a > b;
+}
 int main() {
-	scanf("%lld%lld%lld", &a1, &a2, &n);
-	d = a2 - a1;
-	k = n * (n - 1);
-	ans = n * a1 + k * d / 2;
-	printf("%lld", ans);
+	scanf("%s", b);
+	l = strlen(b);
+	for (int i = 1; i <= l; i++) {
+		a[i] = b[i - 1] - '0';
+		c[i] = a[i];
+	}
+	std::sort(a + 1, a + 1 + l, cmp);
+	for (int i = 1; i <= l; i++) {
+		a[i] = a[i] - c[i];
+	}
+	for (int i = l; i >= 1; i--) {
+		if (a[i] < 0) a[i] += 10, a[i - 1]--;
+	}
+	printf("%d", (int)abs(a[l]));
 	return 0;
 }
