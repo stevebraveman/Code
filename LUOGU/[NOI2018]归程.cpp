@@ -52,11 +52,8 @@ void dijkstra(int s) {
 	}
 }
 int main() {
-	freopen("data.in", "r", stdin);
-	freopen("data.out", "w", stdout);
 	scanf("%d", &T);
 	while (T--) {
-		puts("------");
 		ecnt = 0;
 		memset(head, 0, sizeof(head));
 		memset(anc, 0, sizeof(anc));

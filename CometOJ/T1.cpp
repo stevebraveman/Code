@@ -2,24 +2,35 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define ll long long
-#define MOD 1000000007
-ll n;
-ll qpow(ll a, ll b) {
-	ll res = 1;
-	while (b) {
-		if (b & 1) res = (res * a) % MOD;
-		b >>= 1;
-		a = (a * a) % MOD;
-	}
-	return res % MOD;
+#define MAXN 100100
+int n, m, a[MAXN], top, b[MAXN], k;
+bool vis[MAXN];
+bool cmp(int a, int b) {
+	return a < b;
 }
 int main() {
-	scanf("%lld", &n);
-	if (n == 1) {
-		puts("1");
-		return 0;
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= m; i++) {
+		scanf("%d", &a[i]);
+		vis[a[i]] = 1;
 	}
-	printf("%lld", qpow(3, n - 2 - 2 * ((n - 1) / 3)) % MOD * qpow(2, 2 - (n - 1) % 3) % MOD);
+	memset(b, 0x7f, sizeof(b));
+	for (int i = 1; i <= n; i++) {
+		if (vis[i]) continue;
+		b[++top] = i;
+	}
+	std::sort(b + 1, b + 1 + top);
+	k = 1;
+	for (int i = 1; i <= m; i++) {
+		while (b[k] < a[i]) {
+			// printf("%d ----", k);
+			printf("%d\n", b[k]);
+			k++;
+		}
+		printf("%d\n", a[i]);
+	}
+	for (int i = k; i <= top; i++) {
+		printf("%d\n", b[i]);
+	}
 	return 0;
 }

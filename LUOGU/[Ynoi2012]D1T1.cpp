@@ -3,10 +3,12 @@
 #include <cstring>
 #include <algorithm>
 #include <cmath>
+#define int long long
 #define ls(x) ((x) << 1)
 #define rs(x) ((x) << 1 | 1)
 #define MAXN 200010
-int lazy[MAXN << 2], n, m, a[MAXN];
+long long lazy[MAXN << 2];
+int n, m, a[MAXN];
 double sia[MAXN << 2], coa[MAXN << 2];
 void pd(int p) {
 	sia[p] = sia[ls(p)] + sia[rs(p)];
@@ -60,17 +62,17 @@ void chg(int x, int y, int l, int r, int k, int p) {
 	pd(p);
 }
 int op, l, r, k;
-int main() {
-	scanf("%d", &n);
+signed main() {
+	scanf("%lld", &n);
 	for (int i = 1; i <= n; i++) {
-		scanf("%d", &a[i]);
+		scanf("%lld", &a[i]);
 	}
 	build(1, n, 1);
-	scanf("%d", &m);
+	scanf("%lld", &m);
 	while (m--) {
-		scanf("%d%d%d", &op, &l, &r);
+		scanf("%lld%lld%lld", &op, &l, &r);
 		if (op == 1) {
-			scanf("%d", &k);
+			scanf("%lld", &k);
 			chg(l, r, 1, n, k, 1);
 		}
 		else {
@@ -87,13 +89,4 @@ int main() {
 2 1 5
 2 2 2
 2 4 4
----------
-5
-1 3 1 5 5
-5
-1 5 5 5
-2 3 3
-2 1 5
-2 2 5
-2 4 5
  */

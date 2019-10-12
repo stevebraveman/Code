@@ -1,83 +1,80 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
-#include <queue>
-#define MAXN 400010
-int T, x, l, tot, g;
-char s[MAXN];
-int min(int a, int b) {
-	if (a < b) return a;
-	else return b;
-}
+#include <algorithm>
+#define MOD 1000000007
+#define MAXN 1000005
 int max(int a, int b) {
 	if (a > b) return a;
 	else return b;
 }
-void pre() {
-	while (l && s[l] == '#') {
-		s[l--] = 0;
-	}
+int min(int a, int b) {
+	if (a < b) return a;
+	else return b;
 }
-int goahead() {
-	int j = 0;
-	for (j = 1; j <= l; j++) {
-		if (s[j] == '*') {
-			x++;
-			s[j] = '.';
-		}
-		tot = max(tot, x);
-		if (j + 1 <= l) {
-			if (s[j + 1] == '#') {
-				if (s[j + 2] == '*') continue;
-				else if (s[j] == '#' && s[j + 2] != '*') break;
-				else if (s[j] == '.') {
-					if (!x) break;
-					x--;
-					s[j] = '*';
-				}
-			}
-		}
+int qpow(int a, int b) {
+	int res = 1;
+	while (b) {
+		if (b & 1) res = (1LL * res * a) % MOD;
+		b >>= 1;
+		a = (1LL * a * a) % MOD;
 	}
-	return j;
+	return res % MOD;
 }
-void back(int j) {
-	for (; j > 0; j--) {
-		if (s[j] == '*') {
-			++x;
-			s[j] = '.';
+char S[MAXN];
+int fc[MAXN], ifc[MAXN];
+int n, tot, cnt, tr[MAXN][26], ans, m, sum[MAXN], fl[MAXN], fa[MAXN];
+inline void ins() {
+	scanf("%s", S + 1);
+	int len = strlen(S + 1);
+	int p = 0;
+	for (int i = 1;i <= len;i++) {
+		int k = S[i] - 'a';
+		if (!tr[p][k]) {
+			tr[p][k] = ++cnt;
+			fa[cnt] = p;
 		}
-		tot = max(tot, x);
-		if (j - 1 >= 1 && s[j - 1] == '#' && (!(j - 2 >= 1 && s[j - 2] == '*'))) {
-			x--;
-			s[j] = '*';
-		}
-		if (j + 2 <= l) {
-			if (s[j] == '.' && s[j + 1] == '#' && s[j + 2] == '*') {
-				if (x > 0) {
-					x++;
-					s[j + 2] = '.';
-				}
-			}
-		}
+		p = tr[p][k];
+		sum[p]++;
 	}
+	fl[p] = 1;
 }
-int main() {
-	scanf("%d", &T);
-	while (T--) {
-		scanf("%s", s + 1);
-		l = strlen(s + 1);
-		tot = x = 0;
-		g = goahead();
-		g = min(g, l);
-		back(g);
-		printf("%d\n", tot);
+inline int mch(int pos) {
+	int nw = 0;
+	tot = 0;
+	for (int i = pos; i > 0; ++i) {
+		int k = S[i] - 'a';
+		if (fl[nw]) return i;
+		for (int j = 0; j < k; ++j)
+			tot += sum[tr[nw][j]];
+		nw = tr[nw][k];
+		sum[nw]--;
 	}
 	return 0;
 }
-/*
-4
-.*........#.#..
-....#.*..*.*..#
-.#*.***.**.#.**
-......**..##..*
- */
+inline int A(int n, int m) {
+	if (m > n) return 0;
+	return (1ll * fc[n] * ifc[n - m]) % MOD;
+}
+int main() {
+	scanf("%d%d", &n, &m);
+	fc[0] = ifc[0] = 1;
+	for (int i = 1; i <= n; i++) {
+		fc[i] = (1ll * fc[i - 1] * i) % MOD;
+	}
+	ifc[n] = qpow(fc[n], MOD - 2);
+	for (int i = n - 1; i; --i) {
+		ifc[i] = (1ll * ifc[i + 1] * (i + 1)) % MOD;
+	}
+	for (int i = 1; i <= n; i++) {
+		ins();
+	}
+	scanf("%s", S + 1);
+	int len = 1, nw = 1;
+	for (int i = 1; i <= m; i++) {
+		nw = mch(nw);
+		ans = (ans + 1ll * tot * A(n - i, m - i) % MOD) % MOD;
+	}
+	printf("%d\n", (ans + 1) % MOD);
+	return 0;
+}
