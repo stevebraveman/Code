@@ -2,45 +2,35 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#include <cmath>
-namespace Mker {
-#define uint unsigned int
-	uint sd;
-	int op;
-	inline void init() {
-		scanf("%u %d", &sd, &op);
-	}
-	inline uint uint_rand() {
-		sd ^= sd << 13;
-		sd ^= sd >> 7;
-		sd ^= sd << 11;
-		return sd;
-	}
-	inline double get_n() {
-		double x = (double) (uint_rand() % 100000) / 100000;
-		return x + 4;
-	}
-	inline double get_k() {
-		double x = (double) (uint_rand() % 100000) / 100000;
-		return (x + 1) * 5;
-	}
-	inline void read(double &n,double &a, double &b) {
-		n = get_n();
-		a = get_k();
-		if (op) b = a;
-		else b = get_k();
-	}
-}
-using namespace Mker;
-int T;
-double n, a, b, k, ans;
+#include <queue>
+#define MAXN 1000100
+char s[MAXN];
+int l, x[MAXN], y[MAXN], fl;
 int main() {
-	scanf("%d", &T);
-	init();
-	while (T--) {
-		read(n, a, b);
-		k = a * pow(n, a - 1) + b * pow(n, b - 1);
-		ans += 0.9999999 / k;
+	scanf("%s", s + 1);
+	l = strlen(s + 1);
+	std::reverse(s + 1, s + 1 + l);
+	for (int i = 1; i <= l; i++) {
+		if (s[i] == 'X') {
+			x[i] = 1;
+			fl = 1;
+		}
+		if (s[i] == 'Y') {
+			y[i] = 1;
+			fl = 1;
+		}
+		if (s[i] == 'Z') {
+			if (fl == 1) {
+				puts("-1");
+				return 0;
+			}
+		}
 	}
-	printf("%0.5f", ans);
+	for (int i = l; i >= 1; i--) {
+		printf("%d", x[i]);
+	}
+	puts("");
+	for (int i = l; i >= 1; i--) {
+		printf("%d", y[i]);
+	}
 }

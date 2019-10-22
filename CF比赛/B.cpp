@@ -2,29 +2,22 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define MAXN 100100
-struct can {
-	int w, id;
-}a[MAXN];
-int tot, st[MAXN], n;
-bool cmp(can a, can b) {
-	return a.w > b.w;
-}
+#define ll long long
+#define MAXN 1000010
+int n, a[MAXN], k;
+ll ans, _tot, tot;
 int main() {
 	scanf("%d", &n);
 	for (int i = 1; i <= n; i++) {
-		scanf("%d", &a[i].w);
-		a[i].id = i;
+		scanf("%d", &a[i]);
+		tot += a[i];
 	}
-	std::sort(a + 1, a + 1 + n, cmp);
-	for (int i = 1; i <= n; i++) {
-		tot += (i - 1) * a[i].w;
-		st[i] = a[i].id;
+	std::sort(a + 1, a + n + 1);
+	k = n / 2;
+	for (int i = 1; i <= k; i++) {
+		_tot += a[i];
 	}
-	tot += n;
-	printf("%d\n", tot);
-	for (int i = 1; i <= n; i++) {
-		printf("%d ", st[i]);
-	}
+	tot -= _tot;
+	printf("%I64d", 1ll * _tot * _tot + 1ll * tot * tot);
 	return 0;
 }

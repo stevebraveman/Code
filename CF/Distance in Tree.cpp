@@ -1,16 +1,16 @@
-#include <iostream>
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
-#include <algorithm>
+#include <iostream>
 #define MAXN 50010
 struct Edge {
 	int v, nx;
-}e[MAXN << 1];
+} e[MAXN << 1];
 int head[MAXN], ecnt, n, k, x, y, son[MAXN], siz[MAXN], dis[MAXN], ans;
 int sum[MAXN], r, size, tot;
 bool vis[MAXN];
 void add(int f, int t) {
-	e[++ecnt] = (Edge) {t, head[f]};
+	e[++ecnt] = (Edge){t, head[f]};
 	head[f] = ecnt;
 }
 void dfs(int f, int u) {
@@ -18,21 +18,24 @@ void dfs(int f, int u) {
 	son[u] = 0;
 	for (int i = head[u]; i; i = e[i].nx) {
 		int to = e[i].v;
-		if (vis[to] || to == f) continue;
+	if (vis[to] || to == f)
+		continue;
 		// printf("%d\n", to);
 		dfs(u, to);
 		siz[u] += siz[to];
 		son[u] = std::max(son[u], siz[to]);
-	}
+ 	}
 	son[u] = std::max(son[u], size - siz[u]);
 	// printf("%d %d\n", u, son[u]);
-	if (son[r] > son[u]) r = u;
+	if (son[r] > son[u])
+	r = u;
 }
 void dfsdis(int f, int u, int di) {
 	dis[++tot] = di;
 	for (int i = head[u]; i; i = e[i].nx) {
 		int to = e[i].v;
-		if (vis[to] || to == f) continue;
+		if (vis[to] || to == f)
+		continue;
 		dfsdis(u, to, di + 1);
 	}
 }
@@ -44,13 +47,15 @@ int solve(int u, int val) {
 	int l = 1, _r = tot;
 	// puts("----");
 	// for (int i = 1; i <= tot; i++) {
-	// 	printf("%d ", dis[i]);
+	//    printf("%d ", dis[i]);
 	// }
 	// puts("");
 	// puts("----");
 	while (l < _r) {
-		if (dis[l] + dis[_r] <= k) res += (_r - l), l++;
-		else _r--;
+		if (dis[l] + dis[_r] <= k)
+		res += (_r - l), l++;
+		else
+		_r--;
 	}
 	// puts("-v-");
 	// printf("%d %d %d %d\n", tot, l, _r, res);
@@ -58,8 +63,10 @@ int solve(int u, int val) {
 	// puts("");
 	l = 1, _r = tot;
 	while (l < _r) {
-		if (dis[l] + dis[_r] < k) res -= (_r - l), l++;
-		else _r--;
+		if (dis[l] + dis[_r] < k)
+			res -= (_r - l), l++;
+		else
+			_r--;
 	}
 	// puts("---");
 	// puts("-v-");

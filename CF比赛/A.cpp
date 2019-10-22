@@ -1,29 +1,30 @@
-#include <iostream>
+#include <cmath>
 #include <cstdio>
+#include <iostream>
 #include <cstring>
 #include <algorithm>
-#define MAXN 200100
-int x, y, n, a[MAXN], b[MAXN];
-char s[MAXN];
-int ans;
-int main() {
-	scanf("%d", &n);
-	scanf("%s", s + 1);
-	for (int i = 2; i <= n; i += 2) {
-		if (s[i - 1] == s[i]) {
-			if (s[i] == 'a') {
-				s[i] = 'b';
-				ans++;
-			}
-			else if (s[i] == 'b') {
-				s[i] = 'a';
-				ans++;
-			}
+#define ll long long
+int T, n, __1[2], x, __2[2];
+ll ans;
+int main(){
+	scanf("%d", &T);
+	while (T--){
+		scanf("%d", &n);
+		memset(__1, 0, sizeof(__1));
+		memset(__2, 0, sizeof(__2));
+		for (int i = 1; i <= n; i++){
+			scanf("%d", &x);
+			x = x & 1;
+			__1[x]++;
 		}
-	}
-	printf("%d\n", ans);
-	for (int i = 1; i <= n; i++) {
-		std::cout << s[i];
+		scanf("%d", &n);
+		for (int i = 1; i <= n; i++){
+			scanf("%d", &x);
+			x = x & 1;
+			__2[x]++;
+		}
+		ans = 1ll * __1[0] * __2[0] + 1ll * __1[1] * __2[1];
+		printf("%I64d\n", ans);
 	}
 	return 0;
 }
