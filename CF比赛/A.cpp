@@ -4,27 +4,74 @@
 #include <cstring>
 #include <algorithm>
 #define ll long long
-int T, n, __1[2], x, __2[2];
-ll ans;
-int main(){
-	scanf("%d", &T);
-	while (T--){
-		scanf("%d", &n);
-		memset(__1, 0, sizeof(__1));
-		memset(__2, 0, sizeof(__2));
-		for (int i = 1; i <= n; i++){
-			scanf("%d", &x);
-			x = x & 1;
-			__1[x]++;
-		}
-		scanf("%d", &n);
-		for (int i = 1; i <= n; i++){
-			scanf("%d", &x);
-			x = x & 1;
-			__2[x]++;
-		}
-		ans = 1ll * __1[0] * __2[0] + 1ll * __1[1] * __2[1];
-		printf("%I64d\n", ans);
+namespace STman {
+	inline char gc(){
+		#ifdef ONLINE_JUDGE
+			static char now[1 << 16], *S, *T;
+			if (T == S) {T = (S = now) + fread(now, 1, 1 << 16, stdin); if (T == S) return EOF;}
+			return *S++;
+		#else 
+			return getchar();
+		#endif
 	}
+	template <typename Tp>
+	inline void read(Tp &x) {
+		Tp f = 1;x = 0;
+		char k = gc();
+		while (k < '0' || k > '9') {if (k == '-') f = -1;k = gc();}
+		while (k >= '0' && k <= '9') {x = x * 10 + k - '0';k = gc();}
+		x = x * f;
+	}
+	template <typename Tp>
+	inline void write(Tp x) {
+		if (x < 0) putchar('-') , x = -x;
+		if (x > 9) write(x / 10);
+		putchar(x % 10 + '0');
+	}
+	template <typename Tp>
+	inline Tp max(Tp a , Tp b) {
+		if (a > b) return a;
+		else return b;
+	}
+	template <typename Tp>
+	inline Tp min(Tp a , Tp b) {
+		if (a < b) return a;
+		else return b;
+	}
+	template <typename Tp>
+	inline void swap(Tp &a , Tp &b) {
+		Tp t = a;
+		a = b;
+		b = t;
+	}
+	template <typename Tp>
+	inline Tp abs(Tp &a) {
+		if (a < 0) return -a;
+		else return a;
+	}
+	inline void sp() {
+		putchar(32);
+	}
+	inline void et() {
+		putchar(10);
+	}
+}
+using namespace STman;
+int a, b;
+int main(){
+	scanf("%d%d", &a, &b);
+	if (a == b) {
+		printf("%d4 %d5", a, b);
+		return 0;
+	}
+	else if (a == b - 1) {
+		printf("%d9 %d0", a, b);
+		return 0;
+	}
+	else if (a == 9 && b == 1) {
+		printf("%d %d0", a, b);
+		return 0;
+	}
+	puts("-1");
 	return 0;
 }

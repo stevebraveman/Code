@@ -2,35 +2,24 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#include <queue>
-#define MAXN 1000100
-char s[MAXN];
-int l, x[MAXN], y[MAXN], fl;
+#define MAXN 300010
+int a[MAXN], n;
+long long la[MAXN];
+bool cmp(int a, int b) {
+	return a > b;
+}
+double ans = 0.0;
 int main() {
-	scanf("%s", s + 1);
-	l = strlen(s + 1);
-	std::reverse(s + 1, s + 1 + l);
-	for (int i = 1; i <= l; i++) {
-		if (s[i] == 'X') {
-			x[i] = 1;
-			fl = 1;
-		}
-		if (s[i] == 'Y') {
-			y[i] = 1;
-			fl = 1;
-		}
-		if (s[i] == 'Z') {
-			if (fl == 1) {
-				puts("-1");
-				return 0;
-			}
-		}
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++) {
+		scanf("%d", &a[i]);
 	}
-	for (int i = l; i >= 1; i--) {
-		printf("%d", x[i]);
+	std::sort(a + 1, a + 1 + n, cmp);
+	for (int i = 1; i <= n; i++) {
+		la[i] = la[i - 1] + 1LL * a[i];
 	}
-	puts("");
-	for (int i = l; i >= 1; i--) {
-		printf("%d", y[i]);
+	for (int i = 1; i <= n; i++) {
+		ans = std::max(ans, 1.0 * la[i] / i * la[i]);
 	}
+	printf("%.8lf", ans);
 }

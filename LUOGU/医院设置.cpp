@@ -2,11 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define MAXN 1001
-#define lim 1000
-int a[MAXN];
+#define MAXN 100010
 int main() {
-	for (int i = 1; i <= lim; i++) {
-		
-	}
+
 }

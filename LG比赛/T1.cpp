@@ -2,29 +2,27 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#include <vector>
-#define MAXN 1010
-std::vector<int> v[MAXN];
-int x, n, m, k, ans;
+#include <string>
+#include <map>
+#define MAXN 100010
+std::map <std::string, std::string> hs;
+int n, q;
 int main() {
-	scanf("%d%d%d", &n, &m, &k);
+	scanf("%d%d", &n, &q);
 	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
-			scanf("%d", &x);
-			v[x].push_back(j);
-		}
+		std::string que, ans;
+		std::cin >> que >> ans;
+		hs[que] = ans;
 	}
-	for (int i = 1; i <= k; i++) {
-		std::sort(v[i].begin(), v[i].end());
-	}
-	for (int i = 1; i <= k; i++) {
-		if (v[i].size()) ans = 1;
-		else ans = 0;
-		for (int j = 1; j < (int)v[i].size(); j++) {
-			if (v[i][j] != v[i][j - 1]) {
-				ans++;
+	for (int i = 1; i <= q; i++) {
+		std::string a, b;
+		std::cin >> a;
+		for (int j = 0; j < 4; j++) {
+			std::cin >> b;
+			if (hs[a] == b) {
+				putchar('A' + j);
+				puts("");
 			}
 		}
-		printf("%d ", ans);
 	}
 }
