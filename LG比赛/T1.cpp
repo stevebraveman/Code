@@ -2,27 +2,27 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#include <string>
-#include <map>
-#define MAXN 100010
-std::map <std::string, std::string> hs;
-int n, q;
+#define MAXN 1000010
+char a[MAXN];
+int l, ans, maxx = 0;
 int main() {
-	scanf("%d%d", &n, &q);
-	for (int i = 1; i <= n; i++) {
-		std::string que, ans;
-		std::cin >> que >> ans;
-		hs[que] = ans;
-	}
-	for (int i = 1; i <= q; i++) {
-		std::string a, b;
-		std::cin >> a;
-		for (int j = 0; j < 4; j++) {
-			std::cin >> b;
-			if (hs[a] == b) {
-				putchar('A' + j);
-				puts("");
+	scanf("%s", a);
+	l = strlen(a);
+	for (int i = 0; i < l; i++) {
+		if (a[i] == '0') {
+			ans++;
+			maxx = std::max(ans, maxx);
+		}
+		if (a[i] == '1') {
+			ans--;
+			if (ans < 0) {
+				ans = 0;
 			}
 		}
 	}
+	if (maxx == 0) {
+		puts("-1");
+		return 0;
+	}
+	printf("%d\n", maxx);
 }

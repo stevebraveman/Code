@@ -16,17 +16,14 @@ int rd() {
 int main() {
 	srand(getpid());
 	int n, m;
-	n = random(480, 500);
-	m = random(1, n * (n - 1) / 2 - 1);
-	printf("%d %d\n", n, m);
-	for (int i = 1; i <= m; i++) {
-		int x = random(1, n), y = random(1, n);
-		while (G[x][y] || G[y][x] || x == y) {
-			x = random(1, n);
-			y = random(1, n);
+	n = random(14, 15);
+	printf("%d\n", n);
+	for (int i = n - 1; i >= 1; i--) {
+		for (int j = 1; j <= i; j++) {
+			int x = random(1, 1000000000);
+			printf("%d ", x);
 		}
-		G[x][y] = G[y][x] = 1;
-		printf("%d %d\n", x, y);
+		puts("");
 	}
 	return 0;
 }

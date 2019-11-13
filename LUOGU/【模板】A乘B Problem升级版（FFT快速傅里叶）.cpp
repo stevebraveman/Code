@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
-#define MAXN 4000010
+#define MAXN 4000100
 #define G 3
 #define MOD 1004535809
 #define ll long long
@@ -40,18 +40,19 @@ void ntt(ll *a, ll n, ll f) {
 		a[i] = a[i] * tmp % MOD;
 	}
 }
-ll n, a[MAXN], b[MAXN], m;
+ll n, a[MAXN], b[MAXN], m, t;
 char a1[1000100], b1[1000100];
 int main() {
-	scanf("%lld%lld", &n, &m);
 	scanf("%s%s", a1, b1);
+	n = strlen(a1);
+	m = strlen(b1);
 	for (int i = 0; i < n; i++) {
-		a[i] = a1[i] - '0';
+		a[i] = a1[n - i - 1] - '0';
 		// scanf("%lld", &a[i]);
 		a[i] = (a[i] + MOD) % MOD;
 	}
 	for (int i = 0; i < m; i++) {
-		b[i] = b1[i] - '0';
+		b[i] = b1[m - i - 1] - '0';
 		// scanf("%lld", &b[i]);
 		b[i] = (b[i] + MOD) % MOD;
 	}
@@ -66,7 +67,13 @@ int main() {
 		a[i] = a[i] * b[i] % MOD;
 	}
 	ntt(a, _n, -1);
-	for (int i = 0; i <= n + m - 2; i++) {
-		printf("%lld ", a[i]);
+	for (int i = 0; i <= n + m; i++) {
+		a[i + 1] += a[i] / 10;
+		a[i] %= 10;
+	}
+	t = n + m;
+	while (!a[t]) t--;
+	for (int i = t; i >= 0; i--) {
+		printf("%lld", a[i]);
 	}
 }

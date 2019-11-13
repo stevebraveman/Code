@@ -24,9 +24,6 @@ bool cmp(pt a, pt b) {
 	}
 	else return a.x < b.x;
 }
-double dis(pt a, pt b) {
-	return sqrt(sqr(a.x - b.x) + sqr(a.y - b.y));
-}
 template <typename T>
 void swp(T &a, T &b) {
 	T t = a;
@@ -43,33 +40,27 @@ int main() {
 	}
 	swp(p[r], p[1]);
 	std::sort(p + 2, p + n + 1, cmp);
-	// for (int i = 1; i <= n; i++) {
-	// 	printf("%.3lf %.3lf\n", p[i].x, p[i].y);
-	// }
 	st[1] = p[1];
 	st[2] = p[2];
 	top = 2;
 	for (int i = 3; i <= n; i++) {
-		while (top > 1 && crossp(st[top - 1], p[i], st[top]) >= 0) top--;
+		while (top > 1 && crossp(st[top], p[i], st[top - 1]) <= 0) top--;
 		st[++top] = p[i];
 	}
 	st[top + 1] = p[1];
+	
 	for (int i = 1; i <= top; i++) {
 		f = i % top + 1;
 		g = (i + 2) % top + 1;
 		for (int j = i + 2; j <= top; j++) {
-			while (f % top + 1 != i && fabs(crossp(st[f], st[j], st[i])) < fabs(crossp(st[f + 1], st[j], st[i]))) {
+			while (f % top + 1 != j && fabs(crossp(st[f], st[j], st[i])) < fabs(crossp(st[f + 1], st[j], st[i]))) {
 				f = f % top + 1;
 			}
 			while (g % top + 1 != j && fabs(crossp(st[j], st[g], st[i])) < fabs(crossp(st[j], st[g + 1], st[i]))) {
 				g = g % top + 1;
 			}
-			int tmp1 = dis(st[f], st[i]);
-			int tmp2 = dis(st[g], st[j]);
-			if (tmp1 == tmp2) {
-				ans = std::max(ans, (crossp(st[f], st[j], st[i]) + crossp(st[j], st[g], st[i])));
-			}
+			if (chk()) ans = std::max(ans, (crossp(st[f], st[j], st[i]) + crossp(st[j], st[g], st[i])));
 		}
 	}
-	printf("%.0lf\n", ans / 2);
+	printf("%.3lf\n", ans / 2);
 }

@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 #include <windows.h>
 int main() {
-	for (int i = 31; i <= 40; i++) {
+	for (int i = 41; i <= 48; i++) {
 		char se[50], yt[50];
 		memset(se, 0, sizeof(se));
 		memset(yt, 0, sizeof(yt));
